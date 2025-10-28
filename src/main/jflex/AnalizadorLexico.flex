@@ -38,6 +38,9 @@ FinLinea = \r|\n|\r\n
 //Caracteres no permitidos  no comillas por el estado CADENA
 ErrorCaracter = [^a-zA-Z0-9\ \t\r\n.,;:\+\-\*\/\%=\(\)\[\]\{\}]
 
+ErrorNumeroCaracter = {Digito}+{Letra}({Letra}|{Digito})*
+ErrorDigito = "."{Digito}+
+
 %%
 
 // REGLAS LEXICAS
@@ -68,6 +71,14 @@ ErrorCaracter = [^a-zA-Z0-9\ \t\r\n.,;:\+\-\*\/\%=\(\)\[\]\{\}]
     }
     
     // Tokens Principales 
+    {ErrorNumeroCaracter} 
+    {
+        return new Token(TipoToken.ERROR, yytext(), yyline + 1, yycolumn + 1);
+    }
+    {ErrorDigito} 
+    {
+        return new Token(TipoToken.ERROR, yytext(), yyline + 1, yycolumn + 1);
+    }
     {Decimal} 
     { 
         return new Token(TipoToken.DECIMAL, yytext(), yyline + 1, yycolumn + 1); 
