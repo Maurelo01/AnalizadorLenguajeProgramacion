@@ -1,10 +1,21 @@
 package com.mycompany.analizadores;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 public class VentanaPrincipal extends javax.swing.JFrame 
 {    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
+    private final ControladorArchivos controladorArchivos;
     public VentanaPrincipal() 
     {
         initComponents();
+        this.controladorArchivos = new ControladorArchivos();
+        this.setLocationRelativeTo(null);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -79,9 +90,19 @@ public class VentanaPrincipal extends javax.swing.JFrame
         jMenu1.setText("Archivo");
 
         itemAbrir.setText("Abrir");
+        itemAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAbrirActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemAbrir);
 
         itemGuardar.setText("Guardar");
+        itemGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemGuardarActionPerformed(evt);
+            }
+        });
         jMenu1.add(itemGuardar);
 
         jMenuBar1.add(jMenu1);
@@ -120,6 +141,65 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void itemAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAbrirActionPerformed
+        // Creacion del dialogo de selector de archivo
+        JFileChooser selectorDeArchivo = new JFileChooser();
+        selectorDeArchivo.setDialogTitle("Abrir archivo de entrada");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de texto (.txt)", "txt");
+        selectorDeArchivo.setFileFilter(filtro);
+        
+        int resultado = selectorDeArchivo.showOpenDialog(this);
+        
+        // Comprobacion de la respuesta del dialogo
+        if (resultado == JFileChooser.APPROVE_OPTION)
+        {
+            Path rutaArchivo = selectorDeArchivo.getSelectedFile().toPath();
+            try
+            {
+                String contenido = controladorArchivos.leerArchivo(rutaArchivo);
+                areaDeTextoPrincipal.setText(contenido);
+                lblEstado.setText("Archivo '" +rutaArchivo.getFileName()+ "' cargado.");
+            }
+            catch (IOException ex)
+            {
+                JOptionPane.showMessageDialog(this, "Error al leer el archivo: ", "Error de Apertura", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_itemAbrirActionPerformed
+
+    private void itemGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemGuardarActionPerformed
+        JFileChooser selectorDeArchivo = new JFileChooser();
+        selectorDeArchivo.setDialogTitle("Guardar archivo");
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivos de Texto (.txt)", "txt");
+        selectorDeArchivo.setFileFilter(filtro);
+        
+        int resultado = selectorDeArchivo.showSaveDialog(this);
+        
+        if (resultado == JFileChooser.APPROVE_OPTION) 
+        {
+            File archivoAGuardar = selectorDeArchivo.getSelectedFile();
+            String rutaAbsoluta = archivoAGuardar.getAbsolutePath();
+            if (!rutaAbsoluta.endsWith(".txt")) 
+            {
+                archivoAGuardar = new File(rutaAbsoluta + ".txt");
+            }
+            Path rutaArchivo = archivoAGuardar.toPath();
+            String contenido = areaDeTextoPrincipal.getText();
+            try 
+            {
+                controladorArchivos.guardarArchivo(rutaArchivo, contenido);
+                lblEstado.setText("Archivo '" + rutaArchivo.getFileName() + "' guardado.");
+
+            } 
+            catch (IOException ex) 
+            {
+                JOptionPane.showMessageDialog(this, "Error al guardar el archivo: " + ex.getMessage(), "Error de Guardado", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_itemGuardarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaDeConsola;
