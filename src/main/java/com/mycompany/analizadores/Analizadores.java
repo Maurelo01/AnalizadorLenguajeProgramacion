@@ -1,6 +1,7 @@
 package com.mycompany.analizadores;
 
 import java.io.StringReader;
+import javax.swing.SwingUtilities;
 
 public class Analizadores 
 {
@@ -36,5 +37,11 @@ public class Analizadores
             System.out.println("Ocurrio un error durante el analisis");
             e.printStackTrace();
         }
+        
+        SwingUtilities.invokeLater(() -> 
+        {
+            VentanaPrincipal ventana = new VentanaPrincipal();
+            ventana.setVisible(true);
+        });
     }
 }
