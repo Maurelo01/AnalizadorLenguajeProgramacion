@@ -14,6 +14,26 @@ public class Token
         this.columna = columna;
     }
     
+    public TipoToken getTipo() 
+    {
+        return tipo;
+    }
+
+    public String getLexema() 
+    {
+        return lexema;
+    }
+
+    public int getLinea() 
+    {
+        return linea;
+    }
+
+    public int getColumna() 
+    {
+        return columna;
+    }
+    
     // Para depurar
     @Override
     public String toString() 
