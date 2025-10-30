@@ -39,7 +39,7 @@ FinLinea = \r|\n|\r\n
 ErrorCaracter = [^a-zA-Z0-9\ \t\r\n.,;:\+\-\*\/\%=\(\)\[\]\{\}]
 
 ErrorNumeroCaracter = {Digito}+{Letra}({Letra}|{Digito})*
-ErrorDigito = "."{Digito}+
+ErrorDigito = "."{Digito}+ | {Digito}+"."{Digito}+"."{Digito}+
 
 %%
 
@@ -143,10 +143,10 @@ ErrorDigito = "."{Digito}+
         yybegin(YYINITIAL); 
         return new Token(TipoToken.COMENTARIO_BLOQUE, stringAcumulado.toString(), yyline + 1, yycolumn + 1); 
     }
-    <<EOF>> 
+    <<EOF>>
     {
         yybegin(YYINITIAL);
-        return new Token(TipoToken.ERROR, "Comentario de bloque no cerrado", yyline + 1, yycolumn + 1);
+        return new Token(TipoToken.ERROR, stringAcumulado.toString(), yyline + 1, yycolumn + 1);
     }
 }
 
@@ -173,7 +173,7 @@ ErrorDigito = "."{Digito}+
     <<EOF>> 
     {
         yybegin(YYINITIAL);
-        return new Token(TipoToken.ERROR, "Cadena no cerrada", yyline + 1, yycolumn + 1);
+        return new Token(TipoToken.ERROR, stringAcumulado.toString(), yyline + 1, yycolumn + 1);
     }
 }
 

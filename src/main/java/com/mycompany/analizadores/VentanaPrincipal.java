@@ -1,28 +1,165 @@
 package com.mycompany.analizadores;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
-import javax.swing.text.Utilities;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 public class VentanaPrincipal extends javax.swing.JFrame 
 {    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
     private final ControladorArchivos controladorArchivos;
     private final ControladorAnalizador controladorAnalizador;
+    // Para el colorizado
+    private final StyledDocument docEstilizado;
+    private final DocumentListener oyenteDocumento;
+    // Estilos de color
+    private final AttributeSet estiloDefault;
+    private final AttributeSet estiloReservada;
+    private final AttributeSet estiloPuntuacion;
+    private final AttributeSet estiloIdentificador;
+    private final AttributeSet estiloNumero;
+    private final AttributeSet estiloDecimal;
+    private final AttributeSet estiloComentario;
+    private final AttributeSet estiloOperador;
+    private final AttributeSet estiloAgrupacion;
+    private final AttributeSet estiloError;
+    private final AttributeSet estiloCadena;
+    
     public VentanaPrincipal() 
     {
         initComponents();
         this.controladorArchivos = new ControladorArchivos();
         this.controladorAnalizador = new ControladorAnalizador();
         this.setLocationRelativeTo(null);
+        this.docEstilizado = this.areaDeTextoPrincipal.getStyledDocument();
+        StyleContext contexto = StyleContext.getDefaultStyleContext(); // Define los colores
+        estiloDefault = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.BLACK); // negro para el estilo por default
+        estiloReservada = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 0, 204)); // Azul para palabras reservadas
+        estiloPuntuacion = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(255, 0, 128)); // Rosado para palabras puntuacion
+        estiloIdentificador = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(139, 69, 19)); // Cafes para identificadores
+        estiloNumero = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.GREEN); // Verde para numeros
+        estiloDecimal = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.GREEN); // Verde para decimales 
+        estiloComentario = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 100, 0)); // Verde oscuro para Comentarios
+        estiloOperador = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(255, 140, 0)); // Naranja para operador
+        estiloAgrupacion = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(128, 0, 128)); // Morado para agrupacion
+        estiloError = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.RED); // Rojo para Errores 
+        estiloCadena = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 100, 0));// Verde oscuro para Cadenas
+        
+        this.oyenteDocumento = new DocumentListener() // Oyente para los cambios del documento
+        {
+            @Override
+            public void insertUpdate(DocumentEvent e) 
+            {
+                // Se disparó porque el usuario escribió algo
+                colorearDocumento();
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) 
+            {
+                // Se disparó porque el usuario borró algo
+                colorearDocumento();
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) 
+            {
+                // (Generalmente para cambios de estilo, no de texto)
+            }
+        };
+        this.docEstilizado.addDocumentListener(oyenteDocumento);
+    }
+    
+    private AttributeSet obtenerEstiloParaToken(TipoToken tipo) 
+    {
+        switch (tipo) 
+        {
+            case PALABRA_RESERVADA:
+                return estiloReservada;
+            case PUNTUACION:
+                return estiloPuntuacion;
+            case IDENTIFICADOR:
+                return estiloIdentificador;
+            case NUMERO:
+                return estiloNumero;
+            case DECIMAL:
+                return estiloDecimal;
+            case CADENA:
+                return estiloCadena; 
+            case COMENTARIO_LINEA:
+            case COMENTARIO_BLOQUE:
+                return estiloComentario;
+            case OPERADOR:
+                return estiloOperador;
+            case AGRUPACION:
+                return estiloAgrupacion;
+            case ERROR:
+                return estiloError;
+            default:
+                return estiloDefault; 
+        }
+    }
+    
+    private void colorearDocumento() 
+    {
+        SwingUtilities.invokeLater(() -> 
+        {
+            try 
+            {
+                int posCursor = areaDeTextoPrincipal.getCaretPosition(); // Guardar la posición del cursor
+                String texto = docEstilizado.getText(0, docEstilizado.getLength()); // Obtener todo el texto del editor
+                Element base = docEstilizado.getDefaultRootElement(); // Obtener la estructura de linea
+                // ENviar el texto para el analisis
+                controladorAnalizador.analizar(texto);
+                ArrayList<Token> tokensValidos = controladorAnalizador.getListaTokens();
+                ArrayList<ErrorLexico> tokensError = controladorAnalizador.getListaErrores();
+                ArrayList<Token> todosLosTokens = new ArrayList<>(tokensValidos); 
+                
+                for (ErrorLexico error : tokensError) // Convierte los erreres lexicos a token para ser pintados
+                {
+                    todosLosTokens.add(new Token(TipoToken.ERROR, error.getLexema(), error.getLinea(), error.getColumna()));
+                }
+                
+                docEstilizado.removeDocumentListener(oyenteDocumento); // se desactiva el oyente temporalmente para evitar bucle infinito
+                docEstilizado.setCharacterAttributes(0, texto.length(), estiloDefault, true); // resetea todos los colores a default
+                
+                for (Token token : todosLosTokens) // pasar por los tokens y aplicar el color
+                {
+                    if (token.getTipo() == TipoToken.FIN) continue; // Ignora el token EOF
+                    // calcula la posicion exacta del token
+                    Element lineaEl = base.getElement(token.getLinea() - 1); // Línea
+                    int inicioDeLinea = lineaEl.getStartOffset();
+                    int inicioToken = inicioDeLinea + token.getColumna() - 1; // Columna
+                    int longitudToken = token.getLexema().length();
+                    AttributeSet estilo = obtenerEstiloParaToken(token.getTipo()); // Obteniene el color para este token
+                    docEstilizado.setCharacterAttributes(inicioToken, longitudToken, estilo, true); // Aplica el color
+                }
+                docEstilizado.addDocumentListener(oyenteDocumento); // se reactiva el oyente
+                areaDeTextoPrincipal.setCaretPosition(posCursor); // restaura la posicion del cursor
+            } 
+            catch (BadLocationException ex) 
+            {
+                System.err.println("Error al colorear el documento: " + ex.getMessage());
+            } 
+            catch (Exception ex) 
+            {
+                System.err.println("Error inesperado en colorearDocumento: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        });
     }
     
     private void actualizarTablaTokens(ArrayList<Token> tokens) // Llena la tabla de tokens con los validos
