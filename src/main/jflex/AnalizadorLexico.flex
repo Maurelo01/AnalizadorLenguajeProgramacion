@@ -15,6 +15,8 @@ package com.mycompany.analizadores;
 
 %{
     private StringBuilder stringAcumulado = new StringBuilder(); // Construye cadenas y comentarios
+    private int lineaInicio;
+    private int columnaInicio;
 %}
 
 // Declaraciones de estados
@@ -61,6 +63,8 @@ ErrorDigito = "."{Digito}+ | {Digito}+"."{Digito}+"."{Digito}+
     {
         stringAcumulado.setLength(0); // Limpia el buffer
         stringAcumulado.append(yytext()); // Añade el /*
+        lineaInicio = yyline + 1;
+        columnaInicio = yycolumn + 1;
         yybegin(COMENTARIO_BLOQUE); 
     }
 
@@ -96,7 +100,9 @@ ErrorDigito = "."{Digito}+ | {Digito}+"."{Digito}+"."{Digito}+
     \" 
     {
         stringAcumulado.setLength(0); // Limpia el buffer
-        stringAcumulado.append(yytext()); // Añade el /*
+        stringAcumulado.append(yytext()); // Añade las "
+        lineaInicio = yyline + 1;
+        columnaInicio = yycolumn + 1;
         yybegin(CADENA); 
     }
     
@@ -141,12 +147,12 @@ ErrorDigito = "."{Digito}+ | {Digito}+"."{Digito}+"."{Digito}+
     { 
         stringAcumulado.append(yytext()); // Añade el */
         yybegin(YYINITIAL); 
-        return new Token(TipoToken.COMENTARIO_BLOQUE, stringAcumulado.toString(), yyline + 1, yycolumn + 1); 
+        return new Token(TipoToken.COMENTARIO_BLOQUE, stringAcumulado.toString(), lineaInicio, columnaInicio); 
     }
     <<EOF>>
     {
         yybegin(YYINITIAL);
-        return new Token(TipoToken.ERROR, stringAcumulado.toString(), yyline + 1, yycolumn + 1);
+        return new Token(TipoToken.ERROR_NO_CERRADO, stringAcumulado.toString(), lineaInicio, columnaInicio);
     }
 }
 
@@ -161,19 +167,19 @@ ErrorDigito = "."{Digito}+ | {Digito}+"."{Digito}+"."{Digito}+
     {
         stringAcumulado.append(yytext()); // Añade las "
         yybegin(YYINITIAL); 
-        return new Token(TipoToken.CADENA, stringAcumulado.toString(), yyline + 1, yycolumn + 1); 
+        return new Token(TipoToken.CADENA, stringAcumulado.toString(), lineaInicio, columnaInicio); 
     }
 
     // Error de salto de linea en cadena
     {FinLinea} 
     { 
         yybegin(YYINITIAL); 
-        return new Token(TipoToken.ERROR, "Salto de linea en cadena", yyline + 1, yycolumn + 1); 
+        return new Token(TipoToken.ERROR_NO_CERRADO, stringAcumulado.toString(), lineaInicio, columnaInicio); 
     }
     <<EOF>> 
     {
         yybegin(YYINITIAL);
-        return new Token(TipoToken.ERROR, stringAcumulado.toString(), yyline + 1, yycolumn + 1);
+        return new Token(TipoToken.ERROR_NO_CERRADO, stringAcumulado.toString(), lineaInicio, columnaInicio);
     }
 }
 

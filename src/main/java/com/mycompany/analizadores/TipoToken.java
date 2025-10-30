@@ -21,6 +21,7 @@ public enum TipoToken
     COMENTARIO_BLOQUE, // 51
     
     ERROR,  // Error - 29
+    ERROR_NO_CERRADO,
     
     FIN // Fin del archivo
 }
