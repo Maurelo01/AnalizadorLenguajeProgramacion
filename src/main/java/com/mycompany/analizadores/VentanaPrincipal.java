@@ -8,6 +8,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Element;
+import javax.swing.text.Utilities;
 
 public class VentanaPrincipal extends javax.swing.JFrame 
 {    
@@ -93,6 +96,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         jSplitPane1.setResizeWeight(0.6);
 
+        areaDeTextoPrincipal.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                areaDeTextoPrincipalCaretUpdate(evt);
+            }
+        });
         jScrollPane1.setViewportView(areaDeTextoPrincipal);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -279,6 +287,20 @@ public class VentanaPrincipal extends javax.swing.JFrame
             jTabbedPane1.setSelectedComponent(jScrollPane4);
         }
     }//GEN-LAST:event_itemAnalizarActionPerformed
+
+    private void areaDeTextoPrincipalCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_areaDeTextoPrincipalCaretUpdate
+        if (areaDeTextoPrincipal == null || lblEstado == null) // Proteccion de error
+        {
+            return;
+        }
+        int pos = areaDeTextoPrincipal.getCaretPosition(); // Obtiene la posición exacta del cursor
+        Element base = areaDeTextoPrincipal.getDocument().getDefaultRootElement(); // Obtiene el texto del JTextPane
+        int linea = base.getElementIndex(pos) + 1; // Obtiene la fila
+        Element elementoDeLinea = base.getElement(linea - 1); // La linea en la que esta
+        int inicioDeLinea = elementoDeLinea.getStartOffset(); // La posicion donde inicia la linea
+        int columna = (pos - inicioDeLinea) + 1; // Calcula la columna
+        lblEstado.setText("Línea: " + linea + ", Columna: " + columna); // Actualiza la etiqueta de estado
+    }//GEN-LAST:event_areaDeTextoPrincipalCaretUpdate
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaDeConsola;
