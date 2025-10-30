@@ -51,17 +51,22 @@ public class ControladorAnalizador
                     {
                         desc = "numero mal escrito (contiene caracteres).";
                     }
-                    else if (tokenActual.getLexema().equals("Cadena no cerrada"))
-                    {
-                        desc = "La cadena no se cerro antes del fin de archivo.";
-                    }
-                    else if (tokenActual.getLexema().equals("Cadena no cerrada")) 
+                    this.listaErrores.add(new ErrorLexico(tokenActual.getLexema(), tokenActual.getLinea(), tokenActual.getColumna(), desc));
+                }
+                else if (tokenActual.getTipo() == TipoToken.ERROR_NO_CERRADO)
+                {
+                    String desc;
+                    if (tokenActual.getLexema().startsWith("\"")) 
                     {
                         desc = "La cadena no se cerró antes del fin de archivo.";
                     } 
-                    else if (tokenActual.getLexema().equals("Comentario de bloque no cerrado")) 
+                    else if (tokenActual.getLexema().startsWith("/*"))
                     {
-                        desc = "El comentario de bloque no se cerró antes del fin de archivo.";
+                        desc = "Comentario de bloque no cerrado.";
+                    }
+                    else 
+                    {
+                        desc = "Token no cerrado.";
                     }
                     this.listaErrores.add(new ErrorLexico(tokenActual.getLexema(), tokenActual.getLinea(), tokenActual.getColumna(), desc));
                 }

@@ -53,7 +53,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         estiloPuntuacion = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(255, 0, 128)); // Rosado para palabras puntuacion
         estiloIdentificador = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(139, 69, 19)); // Cafes para identificadores
         estiloNumero = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.GREEN); // Verde para numeros
-        estiloDecimal = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.GREEN); // Verde para decimales 
+        estiloDecimal = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.BLACK); // Verde para decimales 
         estiloComentario = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 100, 0)); // Verde oscuro para Comentarios
         estiloOperador = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(255, 140, 0)); // Naranja para operador
         estiloAgrupacion = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(128, 0, 128)); // Morado para agrupacion
@@ -107,6 +107,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             case AGRUPACION:
                 return estiloAgrupacion;
             case ERROR:
+            case ERROR_NO_CERRADO:
                 return estiloError;
             default:
                 return estiloDefault; 
