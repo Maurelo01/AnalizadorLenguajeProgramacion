@@ -111,6 +111,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="areaDeTextoPrincipal">
+              <Events>
+                <EventHandler event="caretUpdate" listener="javax.swing.event.CaretListener" parameters="javax.swing.event.CaretEvent" handler="areaDeTextoPrincipalCaretUpdate"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
