@@ -3,19 +3,69 @@ package com.mycompany.analizadores;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 public class VentanaPrincipal extends javax.swing.JFrame 
 {    
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaPrincipal.class.getName());
     private final ControladorArchivos controladorArchivos;
+    private final ControladorAnalizador controladorAnalizador;
     public VentanaPrincipal() 
     {
         initComponents();
         this.controladorArchivos = new ControladorArchivos();
+        this.controladorAnalizador = new ControladorAnalizador();
         this.setLocationRelativeTo(null);
+    }
+    
+    private void actualizarTablaTokens(ArrayList<Token> tokens) // Llena la tabla de tokens con los validos
+    {
+        String[] columnas = {"Lexema", "Tipo", "Linea", "Columna"}; // Define las columnas de la tabla
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0)
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false; // Hacer que la tabla no sea editable
+            }
+        };
+        // Llenar el modelo con los datos de la lista
+        for (Token token : tokens) 
+        {
+            Object[] fila = {token.getLexema(), token.getTipo().toString(), token.getLinea(), token.getColumna()};
+            modelo.addRow(fila);
+        }
+
+        // Asignar el modelo nuevo al JTable
+        this.tablaDeTokens.setModel(modelo);
+    }
+    
+    private void actualizarTablaErrores(ArrayList<ErrorLexico> errores) 
+    {
+        // Definir las columnas
+        String[] columnas = {"Lexema", "Línea", "Columna", "Descripción"};
+
+        // Crear la tabla no editable
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false;
+            }
+        };
+        // Llenar la tabla
+        for (ErrorLexico error : errores) 
+        {
+            modelo.addRow(error.toObjectRow());
+        }
+
+        // Asignar el modelo al JTable
+        this.tablaDeErrores.setModel(modelo);
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -110,6 +160,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
         jMenu2.setText("Ejecutar");
 
         itemAnalizar.setText("Analizar");
+        itemAnalizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemAnalizarActionPerformed(evt);
+            }
+        });
         jMenu2.add(itemAnalizar);
 
         jMenuBar1.add(jMenu2);
@@ -200,6 +255,30 @@ public class VentanaPrincipal extends javax.swing.JFrame
             }
         }
     }//GEN-LAST:event_itemGuardarActionPerformed
+
+    private void itemAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAnalizarActionPerformed
+        
+        String textoFuente = areaDeTextoPrincipal.getText(); // Obtener el texto del editor
+        controladorAnalizador.analizar(textoFuente); // Enviar el texto para que se analice
+        // Pedir los resultados
+        ArrayList<Token> tokensEncontrados = controladorAnalizador.getListaTokens();
+        ArrayList<ErrorLexico> erroresEncontrados = controladorAnalizador.getListaErrores();
+        // Mostrar los resultados en las tablas
+        actualizarTablaTokens(tokensEncontrados);
+        actualizarTablaErrores(erroresEncontrados);
+        // Actualizar la barra de estado
+        lblEstado.setText("Análisis completado. Errores: " + erroresEncontrados.size());
+
+        // Cambiar automáticamente a la pestaña de Errores si hay errores
+        if (!erroresEncontrados.isEmpty()) 
+        {
+            jTabbedPane1.setSelectedComponent(jScrollPane3); 
+        } 
+        else 
+        {
+            jTabbedPane1.setSelectedComponent(jScrollPane4);
+        }
+    }//GEN-LAST:event_itemAnalizarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaDeConsola;
