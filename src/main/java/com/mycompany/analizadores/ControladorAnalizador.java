@@ -1,5 +1,6 @@
 package com.mycompany.analizadores;
 
+import com.mycompany.analizadores.sintactico.*;
 import java.io.StringReader;
 import java.util.ArrayList;
 
@@ -8,16 +9,22 @@ public class ControladorAnalizador
     // Listas para guardar los resultados del analisis
     private final ArrayList<Token> listaTokens;
     private final ArrayList<ErrorLexico> listaErrores;
+    private ArrayList<ErrorSintactico> listaErroresSintacticos;
+    private TablaDeSimbolos tablaDeSimbolos;
 
     public ControladorAnalizador() 
     {
         this.listaTokens = new ArrayList<>();
         this.listaErrores = new ArrayList<>();
+        this.listaErroresSintacticos = new ArrayList<>();
+        this.tablaDeSimbolos = new TablaDeSimbolos();
     }
     
     // Obtine el codigo y lo analiza
     public void analizar(String textoFuente)
     {
+        // PARTE DEL ANALIZADOR LEXICO
+        
         // Limpiar de resultador anteriores
         this.listaTokens.clear();
         this.listaErrores.clear();
@@ -82,6 +89,20 @@ public class ControladorAnalizador
             System.err.println("Error no recuperado");
             e.printStackTrace();
         }
+        
+        // PARTE DEL ANALIZADOR SINTACTICO
+        
+        this.listaErroresSintacticos.clear();
+        this.tablaDeSimbolos = new TablaDeSimbolos();
+        
+        if (this.listaErrores.isEmpty() && !this.listaTokens.isEmpty()) 
+        {
+            AnalizadorSintactico parser = new AnalizadorSintactico(this.listaTokens); // Crea el parser con la lista de tokens
+            parser.analizar(); // Ejecuta el analisis
+            // Recoge los resultados del parser
+            this.listaErroresSintacticos = parser.getListaErroresSintacticos();
+            this.tablaDeSimbolos = parser.getTablaDeSimbolos();
+        }
     }
     
     public ArrayList<Token> getListaTokens() 
@@ -92,5 +113,15 @@ public class ControladorAnalizador
     public ArrayList<ErrorLexico> getListaErrores() 
     {
         return listaErrores;
+    }
+    
+    public ArrayList<ErrorSintactico> getListaErroresSintacticos() 
+    {
+        return listaErroresSintacticos;
+    }
+
+    public TablaDeSimbolos getTablaDeSimbolos() 
+    {
+        return tablaDeSimbolos;
     }
 }
