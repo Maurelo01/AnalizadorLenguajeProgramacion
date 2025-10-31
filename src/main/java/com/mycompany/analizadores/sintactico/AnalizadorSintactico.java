@@ -23,7 +23,7 @@ public class AnalizadorSintactico
     }
     public void analizar() 
     {
-       // Implementacion posterior
+       programa();
     }
     
     private void consumirToken() // Avanza al siguiente token
@@ -52,6 +52,73 @@ public class AnalizadorSintactico
     private void reportarError(String descripcion) 
     {
         this.listaErroresSintacticos.add(new ErrorSintactico(descripcion, tokenActual.getLinea(), tokenActual.getColumna()));
+    }
+    
+    private void programa() 
+    {
+        listaInstrucciones();
+        comparar(TipoToken.FIN); // Al final de todo se espera el token de Fin de Archivo
+    }
+    
+    private void instruccion() 
+    {
+        // Aplicar una regla basado en el token actual
+        if (esPalabraReservada("DEFINIR")) 
+        {
+            definirVariable(); 
+        } 
+        else if (tokenActual.getTipo() == TipoToken.IDENTIFICADOR) 
+        {
+            asignacion(); 
+        } 
+        else if (esPalabraReservada("ESCRIBIR")) 
+        {
+            escritura(); 
+        } 
+        else 
+        {
+            // Si no es ninguna de las anteriores es error
+            reportarError("Se esperaba 'DEFINIR', 'ESCRIBIR' o un IDENTIFICADOR.");
+            consumirToken();
+        }
+    }
+    
+    private void listaInstrucciones()
+    {
+        if (esTokenInstruccion()) // Para decidir que regla usar se visualiza el token actual
+        {
+            instruccion();
+            listaInstrucciones(); // Llamada recursiva para seguir analizando
+        }
+        else
+        {
+            // Se aplica la regla 3 epsilon o sea nada xd
+        }
+    }
+    
+    private void escritura() 
+    {
+        // Para despues xd
+    }
+    
+    private void asignacion() 
+    {
+        // Para despues xd
+    }
+    
+    private void definirVariable()
+    {
+        // Para despues xd
+    }
+    
+    private boolean esPalabraReservada(String lexema) 
+    {
+        return tokenActual.getTipo() == TipoToken.PALABRA_RESERVADA && tokenActual.getLexema().equalsIgnoreCase(lexema);
+    }
+    
+    private boolean esTokenInstruccion() 
+    {
+        return esPalabraReservada("DEFINIR") || esPalabraReservada("ESCRIBIR") || tokenActual.getTipo() == TipoToken.IDENTIFICADOR;
     }
     
     public ArrayList<ErrorSintactico> getListaErroresSintacticos() 
