@@ -113,7 +113,11 @@ public class AnalizadorSintactico
     private void programa() 
     {
         listaInstrucciones();
-        comparar(TipoToken.FIN); // Al final de todo se espera el token de Fin de Archivo
+        if (tokenActual.getTipo() != TipoToken.FIN) 
+        {
+            // Si despues de analizar todo no estamos en FIN algo salio mal
+            reportarError("Se esperaba el fin del archivo.");
+        }
     }
     
     private void instruccion() 
@@ -141,14 +145,24 @@ public class AnalizadorSintactico
     
     private void listaInstrucciones()
     {
-        if (esTokenInstruccion()) // Para decidir que regla usar se visualiza el token actual
+        while (tokenActual.getTipo() != TipoToken.FIN)
         {
-            instruccion();
-            listaInstrucciones(); // Llamada recursiva para seguir analizando
-        }
-        else
-        {
-            // Se aplica la regla 3 epsilon o sea nada xd
+            if (esTokenInstruccion()) // Para decidir que regla usar se visualiza el token actual
+            {
+                instruccion();
+            }
+            else
+            {
+                reportarError("Token inesperado '" + tokenActual.getLexema() + "'. No es el inicio de una instruccion valida DEFINIR, ESCRIBIR, ID.");
+                while (tokenActual.getTipo() != TipoToken.FIN && !(tokenActual.getTipo() == TipoToken.PUNTUACION && tokenActual.getLexema().equals(";"))) 
+                {
+                    consumirToken();
+                }
+                if (tokenActual.getTipo() != TipoToken.FIN) 
+                {
+                    consumirToken();
+                }
+            }
         }
     }
     
