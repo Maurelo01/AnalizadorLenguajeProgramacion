@@ -153,7 +153,7 @@ public class AnalizadorSintactico
             }
             else
             {
-                reportarError("Token inesperado '" + tokenActual.getLexema() + "'. No es el inicio de una instruccion valida DEFINIR, ESCRIBIR, ID.");
+                reportarError("Token inesperado '" + tokenActual.getLexema() + "'. No es el inicio de una instruccion valida DEFINIR, ESCRIBIR.");
                 while (tokenActual.getTipo() != TipoToken.FIN && !(tokenActual.getTipo() == TipoToken.PUNTUACION && tokenActual.getLexema().equals(";"))) 
                 {
                     consumirToken();
