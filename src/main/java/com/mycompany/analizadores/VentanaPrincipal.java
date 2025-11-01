@@ -294,25 +294,25 @@ public class VentanaPrincipal extends javax.swing.JFrame
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jSplitPane1 = new javax.swing.JSplitPane();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        splitConsolaReportes = new javax.swing.JSplitPane();
+        scrollAreaDeTexto = new javax.swing.JScrollPane();
         areaDeTextoPrincipal = new javax.swing.JTextPane();
-        jTabbedPane1 = new javax.swing.JTabbedPane();
-        jScrollPane2 = new javax.swing.JScrollPane();
+        tabbedDeReportes = new javax.swing.JTabbedPane();
+        scrollConsola = new javax.swing.JScrollPane();
         areaDeConsola = new javax.swing.JTextArea();
-        jScrollPane3 = new javax.swing.JScrollPane();
+        scrollErrores = new javax.swing.JScrollPane();
         tablaDeErrores = new javax.swing.JTable();
-        jScrollPane4 = new javax.swing.JScrollPane();
+        scrollTokens = new javax.swing.JScrollPane();
         tablaDeTokens = new javax.swing.JTable();
-        jScrollPane5 = new javax.swing.JScrollPane();
+        scrollErroresSintacticos = new javax.swing.JScrollPane();
         tablaErroresSintacticos = new javax.swing.JTable();
-        jScrollPane6 = new javax.swing.JScrollPane();
+        scrollSimbolos = new javax.swing.JScrollPane();
         tablaDeSimbolosUI = new javax.swing.JTable();
-        jScrollPane7 = new javax.swing.JScrollPane();
+        scrollRecuentoLexemas = new javax.swing.JScrollPane();
         tablaRecuentoLexemas = new javax.swing.JTable();
         lblEstado = new javax.swing.JLabel();
         lblBusqueda = new javax.swing.JLabel();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        menuBarOpciones = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
         itemAbrir = new javax.swing.JMenuItem();
         itemGuardar = new javax.swing.JMenuItem();
@@ -323,22 +323,22 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jSplitPane1.setResizeWeight(0.6);
+        splitConsolaReportes.setResizeWeight(0.6);
 
         areaDeTextoPrincipal.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 areaDeTextoPrincipalCaretUpdate(evt);
             }
         });
-        jScrollPane1.setViewportView(areaDeTextoPrincipal);
+        scrollAreaDeTexto.setViewportView(areaDeTextoPrincipal);
 
-        jSplitPane1.setLeftComponent(jScrollPane1);
+        splitConsolaReportes.setLeftComponent(scrollAreaDeTexto);
 
         areaDeConsola.setColumns(20);
         areaDeConsola.setRows(5);
-        jScrollPane2.setViewportView(areaDeConsola);
+        scrollConsola.setViewportView(areaDeConsola);
 
-        jTabbedPane1.addTab("Consola", jScrollPane2);
+        tabbedDeReportes.addTab("Consola", scrollConsola);
 
         tablaDeErrores.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -351,9 +351,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane3.setViewportView(tablaDeErrores);
+        scrollErrores.setViewportView(tablaDeErrores);
 
-        jTabbedPane1.addTab("Reporte de Errores", jScrollPane3);
+        tabbedDeReportes.addTab("Reporte de Errores", scrollErrores);
 
         tablaDeTokens.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -366,9 +366,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane4.setViewportView(tablaDeTokens);
+        scrollTokens.setViewportView(tablaDeTokens);
 
-        jTabbedPane1.addTab("Reporte de Tokens", jScrollPane4);
+        tabbedDeReportes.addTab("Reporte de Tokens", scrollTokens);
 
         tablaErroresSintacticos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -381,9 +381,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane5.setViewportView(tablaErroresSintacticos);
+        scrollErroresSintacticos.setViewportView(tablaErroresSintacticos);
 
-        jTabbedPane1.addTab("Errores Sintácticos", jScrollPane5);
+        tabbedDeReportes.addTab("Errores Sintácticos", scrollErroresSintacticos);
 
         tablaDeSimbolosUI.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -396,9 +396,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane6.setViewportView(tablaDeSimbolosUI);
+        scrollSimbolos.setViewportView(tablaDeSimbolosUI);
 
-        jTabbedPane1.addTab("Tabla de Variables", jScrollPane6);
+        tabbedDeReportes.addTab("Tabla de Variables", scrollSimbolos);
 
         tablaRecuentoLexemas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -411,16 +411,17 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane7.setViewportView(tablaRecuentoLexemas);
+        scrollRecuentoLexemas.setViewportView(tablaRecuentoLexemas);
 
-        jTabbedPane1.addTab("Recuento de Lexemas", jScrollPane7);
+        tabbedDeReportes.addTab("Recuento de Lexemas", scrollRecuentoLexemas);
 
-        jSplitPane1.setRightComponent(jTabbedPane1);
+        splitConsolaReportes.setRightComponent(tabbedDeReportes);
 
         lblEstado.setText("Linea: 1, Columna: 1");
 
         menuArchivo.setText("Archivo");
 
+        itemAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
         itemAbrir.setText("Abrir");
         itemAbrir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -429,6 +430,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
         menuArchivo.add(itemAbrir);
 
+        itemGuardar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         itemGuardar.setText("Guardar");
         itemGuardar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -437,10 +439,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
         menuArchivo.add(itemGuardar);
 
-        jMenuBar1.add(menuArchivo);
+        menuBarOpciones.add(menuArchivo);
 
         menuAnalizar.setText("Ejecutar");
 
+        itemAnalizar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F5, 0));
         itemAnalizar.setText("Analizar");
         itemAnalizar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -449,10 +452,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
         menuAnalizar.add(itemAnalizar);
 
-        jMenuBar1.add(menuAnalizar);
+        menuBarOpciones.add(menuAnalizar);
 
         menuBuscar.setText("Buscar");
 
+        itemBuscar.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         itemBuscar.setText("Buscar Palabra");
         itemBuscar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -461,9 +465,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
         menuBuscar.add(itemBuscar);
 
-        jMenuBar1.add(menuBuscar);
+        menuBarOpciones.add(menuBuscar);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(menuBarOpciones);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -472,7 +476,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
+                    .addComponent(splitConsolaReportes, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lblEstado)
@@ -484,7 +488,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(splitConsolaReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEstado)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
@@ -583,15 +587,15 @@ public class VentanaPrincipal extends javax.swing.JFrame
         // Cambiar automáticamente a la pestaña de Errores si hay errores
         if (!erroresEncontrados.isEmpty()) 
         {
-            jTabbedPane1.setSelectedComponent(jScrollPane3); 
+            tabbedDeReportes.setSelectedComponent(scrollErrores); 
         } 
         else if (!erroresSintacticos.isEmpty()) 
         {
-            jTabbedPane1.setSelectedComponent(jScrollPane5); 
+            tabbedDeReportes.setSelectedComponent(scrollErroresSintacticos); 
         }
         else 
         {
-            jTabbedPane1.setSelectedComponent(jScrollPane2);
+            tabbedDeReportes.setSelectedComponent(scrollConsola);
         }
     }//GEN-LAST:event_itemAnalizarActionPerformed
 
@@ -652,21 +656,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JMenuItem itemAnalizar;
     private javax.swing.JMenuItem itemBuscar;
     private javax.swing.JMenuItem itemGuardar;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JScrollPane jScrollPane7;
-    private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblBusqueda;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JMenu menuAnalizar;
     private javax.swing.JMenu menuArchivo;
+    private javax.swing.JMenuBar menuBarOpciones;
     private javax.swing.JMenu menuBuscar;
+    private javax.swing.JScrollPane scrollAreaDeTexto;
+    private javax.swing.JScrollPane scrollConsola;
+    private javax.swing.JScrollPane scrollErrores;
+    private javax.swing.JScrollPane scrollErroresSintacticos;
+    private javax.swing.JScrollPane scrollRecuentoLexemas;
+    private javax.swing.JScrollPane scrollSimbolos;
+    private javax.swing.JScrollPane scrollTokens;
+    private javax.swing.JSplitPane splitConsolaReportes;
+    private javax.swing.JTabbedPane tabbedDeReportes;
     private javax.swing.JTable tablaDeErrores;
     private javax.swing.JTable tablaDeSimbolosUI;
     private javax.swing.JTable tablaDeTokens;
