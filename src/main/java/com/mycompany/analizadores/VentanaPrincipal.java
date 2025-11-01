@@ -17,7 +17,9 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.text.Element;
+import javax.swing.text.Highlighter;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
@@ -43,6 +45,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private final AttributeSet estiloError;
     private final AttributeSet estiloCadena;
     
+    private final Highlighter.HighlightPainter resaltador; // Resaltador para la busqueda
+    
     public VentanaPrincipal() 
     {
         initComponents();
@@ -62,6 +66,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         estiloAgrupacion = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(128, 0, 128)); // Morado para agrupacion
         estiloError = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.RED); // Rojo para Errores 
         estiloCadena = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 100, 0));// Verde oscuro para Cadenas
+        resaltador = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW); // Color amarillo para busqueda
         
         this.oyenteDocumento = new DocumentListener() // Oyente para los cambios del documento
         {
@@ -121,6 +126,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     {
         SwingUtilities.invokeLater(() -> 
         {
+            removerResaltadosBusqueda();
             try 
             {
                 int posCursor = areaDeTextoPrincipal.getCaretPosition(); // Guardar la posición del cursor
@@ -269,6 +275,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         this.tablaRecuentoLexemas.setModel(modelo);
     }
+    
+    private void removerResaltadosBusqueda() 
+    {
+        Highlighter highlighter = areaDeTextoPrincipal.getHighlighter();
+        Highlighter.Highlight[] highlights = highlighter.getHighlights();
+
+        for (Highlighter.Highlight h : highlights) 
+        {
+            // Solo remueve los resaltados que sean del resaltador de busqueda
+            if (h.getPainter() == resaltador) 
+            {
+                highlighter.removeHighlight(h);
+            }
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -290,12 +311,15 @@ public class VentanaPrincipal extends javax.swing.JFrame
         jScrollPane7 = new javax.swing.JScrollPane();
         tablaRecuentoLexemas = new javax.swing.JTable();
         lblEstado = new javax.swing.JLabel();
+        lblBusqueda = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuArchivo = new javax.swing.JMenu();
         itemAbrir = new javax.swing.JMenuItem();
         itemGuardar = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        menuAnalizar = new javax.swing.JMenu();
         itemAnalizar = new javax.swing.JMenuItem();
+        menuBuscar = new javax.swing.JMenu();
+        itemBuscar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -395,7 +419,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         lblEstado.setText("Linea: 1, Columna: 1");
 
-        jMenu1.setText("Archivo");
+        menuArchivo.setText("Archivo");
 
         itemAbrir.setText("Abrir");
         itemAbrir.addActionListener(new java.awt.event.ActionListener() {
@@ -403,7 +427,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 itemAbrirActionPerformed(evt);
             }
         });
-        jMenu1.add(itemAbrir);
+        menuArchivo.add(itemAbrir);
 
         itemGuardar.setText("Guardar");
         itemGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -411,11 +435,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 itemGuardarActionPerformed(evt);
             }
         });
-        jMenu1.add(itemGuardar);
+        menuArchivo.add(itemGuardar);
 
-        jMenuBar1.add(jMenu1);
+        jMenuBar1.add(menuArchivo);
 
-        jMenu2.setText("Ejecutar");
+        menuAnalizar.setText("Ejecutar");
 
         itemAnalizar.setText("Analizar");
         itemAnalizar.addActionListener(new java.awt.event.ActionListener() {
@@ -423,9 +447,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 itemAnalizarActionPerformed(evt);
             }
         });
-        jMenu2.add(itemAnalizar);
+        menuAnalizar.add(itemAnalizar);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuAnalizar);
+
+        menuBuscar.setText("Buscar");
+
+        itemBuscar.setText("Buscar Palabra");
+        itemBuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemBuscarActionPerformed(evt);
+            }
+        });
+        menuBuscar.add(itemBuscar);
+
+        jMenuBar1.add(menuBuscar);
 
         setJMenuBar(jMenuBar1);
 
@@ -436,9 +472,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblEstado)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblEstado)
+                            .addComponent(lblBusqueda))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -449,7 +487,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 .addComponent(jSplitPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblEstado)
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addComponent(lblBusqueda)
+                .addContainerGap())
         );
 
         pack();
@@ -569,14 +609,49 @@ public class VentanaPrincipal extends javax.swing.JFrame
         lblEstado.setText("Línea: " + linea + ", Columna: " + columna); // Actualiza la etiqueta de estado
     }//GEN-LAST:event_areaDeTextoPrincipalCaretUpdate
 
+    private void itemBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemBuscarActionPerformed
+        removerResaltadosBusqueda();
+        String palabraBuscar = JOptionPane.showInputDialog(this, "Ingrese el texto que desea buscar:", "Buscar Patron", JOptionPane.PLAIN_MESSAGE); // Pide al usuario la palabra a buscar
+        if (palabraBuscar == null || palabraBuscar.isEmpty()) // Cancela si no escribe nada
+        {
+            return;
+        }
+        try 
+        {
+            Highlighter highlighter = areaDeTextoPrincipal.getHighlighter();
+            String textoCompleto = areaDeTextoPrincipal.getDocument().getText(0, areaDeTextoPrincipal.getDocument().getLength());
+            // Bucle de busqueda
+            int index = -1;
+            int count = 0;
+            while ((index = textoCompleto.indexOf(palabraBuscar, index + 1)) != -1) 
+            {
+                highlighter.addHighlight(index, index + palabraBuscar.length(), resaltador); // Aplicar el resaltado
+                count++;
+            }
+            // Mostrar al usuario
+            if (count == 0) 
+            {
+                lblBusqueda.setText("No se encontraron coincidencias para '" + palabraBuscar + "'.");
+            } 
+            else 
+            {
+                lblBusqueda.setText("Se encontraron " + count + " coincidencias.");
+            }
+
+        } 
+        catch (BadLocationException ex) 
+        {
+            System.err.println("Error al resaltar busqueda: " + ex.getMessage());
+        }
+    }//GEN-LAST:event_itemBuscarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea areaDeConsola;
     private javax.swing.JTextPane areaDeTextoPrincipal;
     private javax.swing.JMenuItem itemAbrir;
     private javax.swing.JMenuItem itemAnalizar;
+    private javax.swing.JMenuItem itemBuscar;
     private javax.swing.JMenuItem itemGuardar;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
@@ -587,7 +662,11 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JLabel lblBusqueda;
     private javax.swing.JLabel lblEstado;
+    private javax.swing.JMenu menuAnalizar;
+    private javax.swing.JMenu menuArchivo;
+    private javax.swing.JMenu menuBuscar;
     private javax.swing.JTable tablaDeErrores;
     private javax.swing.JTable tablaDeSimbolosUI;
     private javax.swing.JTable tablaDeTokens;
