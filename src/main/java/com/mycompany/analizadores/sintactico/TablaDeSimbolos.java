@@ -1,5 +1,6 @@
 package com.mycompany.analizadores.sintactico;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TablaDeSimbolos 
@@ -97,5 +98,17 @@ public class TablaDeSimbolos
             return null; // Error de variable no declarada
         }
         return tabla.get(nombre).tipo;
+    }
+    
+    public ArrayList<Object[]> getDatosParaTabla() 
+    {
+        ArrayList<Object[]> datos = new ArrayList<>();
+        for (String nombre : tabla.keySet()) 
+        {
+            Simbolo s = tabla.get(nombre);
+            Object valor = (s.valor != null) ? s.valor : "null"; // Asegura de que el valor no sea nulo para mostrarlo
+            datos.add(new Object[] { nombre, s.tipo.toString(), valor });
+        }
+        return datos;
     }
 }

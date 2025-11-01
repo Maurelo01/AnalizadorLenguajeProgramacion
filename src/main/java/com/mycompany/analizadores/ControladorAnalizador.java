@@ -10,6 +10,7 @@ public class ControladorAnalizador
     private final ArrayList<Token> listaTokens;
     private final ArrayList<ErrorLexico> listaErrores;
     private ArrayList<ErrorSintactico> listaErroresSintacticos;
+    private ArrayList<String> salidaConsola;
     private TablaDeSimbolos tablaDeSimbolos;
 
     public ControladorAnalizador() 
@@ -18,6 +19,7 @@ public class ControladorAnalizador
         this.listaErrores = new ArrayList<>();
         this.listaErroresSintacticos = new ArrayList<>();
         this.tablaDeSimbolos = new TablaDeSimbolos();
+        this.salidaConsola = new ArrayList<>();
     }
     
     // Obtine el codigo y lo analiza
@@ -94,6 +96,7 @@ public class ControladorAnalizador
         
         this.listaErroresSintacticos.clear();
         this.tablaDeSimbolos = new TablaDeSimbolos();
+        this.salidaConsola.clear();
         
         if (this.listaErrores.isEmpty() && !this.listaTokens.isEmpty()) 
         {
@@ -102,6 +105,7 @@ public class ControladorAnalizador
             // Recoge los resultados del parser
             this.listaErroresSintacticos = parser.getListaErroresSintacticos();
             this.tablaDeSimbolos = parser.getTablaDeSimbolos();
+            this.salidaConsola = parser.getSalidaConsola();
         }
     }
     
@@ -123,5 +127,10 @@ public class ControladorAnalizador
     public TablaDeSimbolos getTablaDeSimbolos() 
     {
         return tablaDeSimbolos;
+    }
+    
+    public ArrayList<String> getSalidaConsola() 
+    {
+        return salidaConsola;
     }
 }

@@ -1,5 +1,7 @@
 package com.mycompany.analizadores;
 
+import com.mycompany.analizadores.sintactico.ErrorSintactico;
+import com.mycompany.analizadores.sintactico.TablaDeSimbolos;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
@@ -163,6 +165,43 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
     }
     
+    private void actualizarTablaErroresSintacticos(ArrayList<ErrorSintactico> errores) 
+    {
+        String[] columnas = {"Descripción", "Línea", "Columna"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false;
+            }
+        };
+        for (ErrorSintactico error : errores) 
+        {
+            modelo.addRow(error.toObjectRow());
+        }
+        this.tablaErroresSintacticos.setModel(modelo);
+    }
+    
+    private void actualizarTablaDeSimbolos(TablaDeSimbolos tabla) 
+    {
+        String[] columnas = {"Nombre", "Tipo", "Valor"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false;
+            }
+        };
+        ArrayList<Object[]> datos = tabla.getDatosParaTabla();
+        for (Object[] fila : datos) 
+        {
+            modelo.addRow(fila);
+        }
+        this.tablaDeSimbolosUI.setModel(modelo);
+    }
+    
     private void actualizarTablaTokens(ArrayList<Token> tokens) // Llena la tabla de tokens con los validos
     {
         String[] columnas = {"Lexema", "Tipo", "Linea", "Columna"}; // Define las columnas de la tabla
@@ -222,6 +261,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
         tablaDeErrores = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
         tablaDeTokens = new javax.swing.JTable();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        tablaErroresSintacticos = new javax.swing.JTable();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        tablaDeSimbolosUI = new javax.swing.JTable();
         lblEstado = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -278,6 +321,36 @@ public class VentanaPrincipal extends javax.swing.JFrame
         jScrollPane4.setViewportView(tablaDeTokens);
 
         jTabbedPane1.addTab("Reporte de Tokens", jScrollPane4);
+
+        tablaErroresSintacticos.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane5.setViewportView(tablaErroresSintacticos);
+
+        jTabbedPane1.addTab("Errores Sintácticos", jScrollPane5);
+
+        tablaDeSimbolosUI.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane6.setViewportView(tablaDeSimbolosUI);
+
+        jTabbedPane1.addTab("Tabla de Variables", jScrollPane6);
 
         jSplitPane1.setRightComponent(jTabbedPane1);
 
@@ -406,12 +479,24 @@ public class VentanaPrincipal extends javax.swing.JFrame
         
         String textoFuente = areaDeTextoPrincipal.getText(); // Obtener el texto del editor
         controladorAnalizador.analizar(textoFuente); // Enviar el texto para que se analice
-        // Pedir los resultados
+        // Pedir los resultados lexicos
         ArrayList<Token> tokensEncontrados = controladorAnalizador.getListaTokens();
         ArrayList<ErrorLexico> erroresEncontrados = controladorAnalizador.getListaErrores();
+        // Pedir los resultados sintáctico
+        ArrayList<ErrorSintactico> erroresSintacticos = controladorAnalizador.getListaErroresSintacticos();
+        ArrayList<String> salidaConsola = controladorAnalizador.getSalidaConsola();
         // Mostrar los resultados en las tablas
         actualizarTablaTokens(tokensEncontrados);
         actualizarTablaErrores(erroresEncontrados);
+        actualizarTablaErroresSintacticos(erroresSintacticos);
+        actualizarTablaDeSimbolos(controladorAnalizador.getTablaDeSimbolos());
+        
+        areaDeConsola.setText(""); // Limpiar consola anterior
+        for (String linea : salidaConsola) 
+        {
+            areaDeConsola.append(linea + "\n");
+        }
+        
         // Actualizar la barra de estado
         lblEstado.setText("Análisis completado. Errores: " + erroresEncontrados.size());
 
@@ -420,9 +505,13 @@ public class VentanaPrincipal extends javax.swing.JFrame
         {
             jTabbedPane1.setSelectedComponent(jScrollPane3); 
         } 
+        else if (!erroresSintacticos.isEmpty()) 
+        {
+            jTabbedPane1.setSelectedComponent(jScrollPane5); 
+        }
         else 
         {
-            jTabbedPane1.setSelectedComponent(jScrollPane4);
+            jTabbedPane1.setSelectedComponent(jScrollPane2);
         }
     }//GEN-LAST:event_itemAnalizarActionPerformed
 
@@ -453,10 +542,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblEstado;
     private javax.swing.JTable tablaDeErrores;
+    private javax.swing.JTable tablaDeSimbolosUI;
     private javax.swing.JTable tablaDeTokens;
+    private javax.swing.JTable tablaErroresSintacticos;
     // End of variables declaration//GEN-END:variables
 }
