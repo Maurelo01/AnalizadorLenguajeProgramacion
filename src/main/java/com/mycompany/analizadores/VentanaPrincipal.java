@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -165,7 +166,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         });
     }
     
-    private void actualizarTablaErroresSintacticos(ArrayList<ErrorSintactico> errores) 
+    private void actualizarTablaErroresSintacticos(ArrayList<ErrorSintactico> errores) // LLena la tabla de errores sintacticos
     {
         String[] columnas = {"Descripción", "Línea", "Columna"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
@@ -183,7 +184,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.tablaErroresSintacticos.setModel(modelo);
     }
     
-    private void actualizarTablaDeSimbolos(TablaDeSimbolos tabla) 
+    private void actualizarTablaDeSimbolos(TablaDeSimbolos tabla) // Llena la tabla de simbolos
     {
         String[] columnas = {"Nombre", "Tipo", "Valor"};
         DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
@@ -224,7 +225,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         this.tablaDeTokens.setModel(modelo);
     }
     
-    private void actualizarTablaErrores(ArrayList<ErrorLexico> errores) 
+    private void actualizarTablaErrores(ArrayList<ErrorLexico> errores) // Llena la tabla de errors
     {
         // Definir las columnas
         String[] columnas = {"Lexema", "Línea", "Columna", "Descripción"};
@@ -247,6 +248,27 @@ public class VentanaPrincipal extends javax.swing.JFrame
         // Asignar el modelo al JTable
         this.tablaDeErrores.setModel(modelo);
     }
+    
+    private void actualizarTablaRecuento(Map<String, ControladorAnalizador.ConteoLexema> conteo) // LLena la tabla de lexemas 
+    {
+        String[] columnas = {"Lexema", "Tipo", "Cantidad"};
+        DefaultTableModel modelo = new DefaultTableModel(columnas, 0) 
+        {
+            @Override
+            public boolean isCellEditable(int row, int column) 
+            {
+                return false;
+            }
+        };
+        for (Map.Entry<String, ControladorAnalizador.ConteoLexema> entrada : conteo.entrySet()) 
+        {
+            String lexema = entrada.getKey();
+            ControladorAnalizador.ConteoLexema datos = entrada.getValue();
+            modelo.addRow(new Object[] { lexema, datos.getTipo().toString(), datos.getConteo() });
+        }
+
+        this.tablaRecuentoLexemas.setModel(modelo);
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -265,6 +287,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
         tablaErroresSintacticos = new javax.swing.JTable();
         jScrollPane6 = new javax.swing.JScrollPane();
         tablaDeSimbolosUI = new javax.swing.JTable();
+        jScrollPane7 = new javax.swing.JScrollPane();
+        tablaRecuentoLexemas = new javax.swing.JTable();
         lblEstado = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -351,6 +375,21 @@ public class VentanaPrincipal extends javax.swing.JFrame
         jScrollPane6.setViewportView(tablaDeSimbolosUI);
 
         jTabbedPane1.addTab("Tabla de Variables", jScrollPane6);
+
+        tablaRecuentoLexemas.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane7.setViewportView(tablaRecuentoLexemas);
+
+        jTabbedPane1.addTab("Recuento de Lexemas", jScrollPane7);
 
         jSplitPane1.setRightComponent(jTabbedPane1);
 
@@ -490,6 +529,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         actualizarTablaErrores(erroresEncontrados);
         actualizarTablaErroresSintacticos(erroresSintacticos);
         actualizarTablaDeSimbolos(controladorAnalizador.getTablaDeSimbolos());
+        actualizarTablaRecuento(controladorAnalizador.getRecuentoLexemas());
         
         areaDeConsola.setText(""); // Limpiar consola anterior
         for (String linea : salidaConsola) 
@@ -544,6 +584,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
+    private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JLabel lblEstado;
@@ -551,5 +592,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JTable tablaDeSimbolosUI;
     private javax.swing.JTable tablaDeTokens;
     private javax.swing.JTable tablaErroresSintacticos;
+    private javax.swing.JTable tablaRecuentoLexemas;
     // End of variables declaration//GEN-END:variables
 }

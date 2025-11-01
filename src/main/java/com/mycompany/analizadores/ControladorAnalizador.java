@@ -3,6 +3,8 @@ package com.mycompany.analizadores;
 import com.mycompany.analizadores.sintactico.*;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ControladorAnalizador 
 {
@@ -20,6 +22,22 @@ public class ControladorAnalizador
         this.listaErroresSintacticos = new ArrayList<>();
         this.tablaDeSimbolos = new TablaDeSimbolos();
         this.salidaConsola = new ArrayList<>();
+    }
+    
+    public class ConteoLexema 
+    {
+        private final TipoToken tipo;
+        private int conteo;
+
+        public ConteoLexema(TipoToken tipo, int conteo) 
+        {
+            this.tipo = tipo;
+            this.conteo = conteo;
+        }
+
+        public TipoToken getTipo() { return tipo; }
+        public int getConteo() { return conteo; }
+        public void incrementar() { this.conteo++; }
     }
     
     // Obtine el codigo y lo analiza
@@ -107,6 +125,34 @@ public class ControladorAnalizador
             this.tablaDeSimbolos = parser.getTablaDeSimbolos();
             this.salidaConsola = parser.getSalidaConsola();
         }
+    }
+    
+    public Map<String, ConteoLexema> getRecuentoLexemas() // Procesa la lista de tokens y devuelve un mapa con el conteo de cada lexema solo si no hay errores
+    {
+        Map<String, ConteoLexema> mapaConteo = new HashMap<>();
+        if (!listaErrores.isEmpty() || !listaErroresSintacticos.isEmpty()) // Sino hay errores se cuenta 
+        {
+            return mapaConteo; // Devolver mapa vacio
+        }
+        
+        for (Token token : this.listaTokens) 
+        {
+            // Ignora el token de Fin de Archivo
+            if (token.getTipo() == TipoToken.FIN) 
+            {
+                continue;
+            }
+            String lexema = token.getLexema();
+            if (mapaConteo.containsKey(lexema)) 
+            {
+                mapaConteo.get(lexema).incrementar(); // Si ya lo encotro solo incrementa el contador
+            } 
+            else 
+            {
+                mapaConteo.put(lexema, new ConteoLexema(token.getTipo(), 1)); // Si no lo añade al mapa
+            }
+        }
+        return mapaConteo;
     }
     
     public ArrayList<Token> getListaTokens() 
