@@ -67,7 +67,9 @@ public class VentanaPrincipal extends javax.swing.JFrame
         estiloError = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, Color.RED); // Rojo para Errores 
         estiloCadena = contexto.addAttribute(contexto.getEmptySet(), StyleConstants.Foreground, new Color(0, 100, 0));// Verde oscuro para Cadenas
         resaltador = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW); // Color amarillo para busqueda
-        
+        lblBusqueda.setText("");
+        lblEstadoArchivos.setText("");
+        lblEstadoAnalisis.setText("");
         this.oyenteDocumento = new DocumentListener() // Oyente para los cambios del documento
         {
             @Override
@@ -278,9 +280,10 @@ public class VentanaPrincipal extends javax.swing.JFrame
     
     private void removerResaltadosBusqueda() 
     {
+        lblBusqueda.setText("");
         Highlighter highlighter = areaDeTextoPrincipal.getHighlighter();
         Highlighter.Highlight[] highlights = highlighter.getHighlights();
-
+        
         for (Highlighter.Highlight h : highlights) 
         {
             // Solo remueve los resaltados que sean del resaltador de busqueda
@@ -312,6 +315,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
         tablaRecuentoLexemas = new javax.swing.JTable();
         lblEstado = new javax.swing.JLabel();
         lblBusqueda = new javax.swing.JLabel();
+        lblEstadoAnalisis = new javax.swing.JLabel();
+        lblEstadoArchivos = new javax.swing.JLabel();
         menuBarOpciones = new javax.swing.JMenuBar();
         menuArchivo = new javax.swing.JMenu();
         itemAbrir = new javax.swing.JMenuItem();
@@ -322,6 +327,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         itemBuscar = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Analizador");
 
         splitConsolaReportes.setResizeWeight(0.6);
 
@@ -419,6 +425,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
 
         lblEstado.setText("Linea: 1, Columna: 1");
 
+        lblBusqueda.setText("Estado busqueda");
+
+        lblEstadoAnalisis.setText("Estado Analisis");
+
+        lblEstadoArchivos.setText("Estado Archivos");
+
         menuArchivo.setText("Archivo");
 
         itemAbrir.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.ALT_DOWN_MASK | java.awt.event.InputEvent.CTRL_DOWN_MASK));
@@ -479,8 +491,12 @@ public class VentanaPrincipal extends javax.swing.JFrame
                     .addComponent(splitConsolaReportes, javax.swing.GroupLayout.DEFAULT_SIZE, 1338, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblEstado)
-                            .addComponent(lblBusqueda))
+                            .addComponent(lblBusqueda)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblEstado)
+                                .addGap(427, 427, 427)
+                                .addComponent(lblEstadoAnalisis))
+                            .addComponent(lblEstadoArchivos))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -490,10 +506,14 @@ public class VentanaPrincipal extends javax.swing.JFrame
                 .addContainerGap()
                 .addComponent(splitConsolaReportes, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblEstado)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEstado)
+                    .addComponent(lblEstadoAnalisis))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblBusqueda)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lblEstadoArchivos)
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         pack();
@@ -516,7 +536,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             {
                 String contenido = controladorArchivos.leerArchivo(rutaArchivo);
                 areaDeTextoPrincipal.setText(contenido);
-                lblEstado.setText("Archivo '" +rutaArchivo.getFileName()+ "' cargado.");
+                lblEstadoArchivos.setText("Archivo '" +rutaArchivo.getFileName()+ "' cargado.");
             }
             catch (IOException ex)
             {
@@ -547,7 +567,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
             try 
             {
                 controladorArchivos.guardarArchivo(rutaArchivo, contenido);
-                lblEstado.setText("Archivo '" + rutaArchivo.getFileName() + "' guardado.");
+                lblEstadoArchivos.setText("Archivo '" + rutaArchivo.getFileName() + "' guardado.");
 
             } 
             catch (IOException ex) 
@@ -559,7 +579,6 @@ public class VentanaPrincipal extends javax.swing.JFrame
     }//GEN-LAST:event_itemGuardarActionPerformed
 
     private void itemAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemAnalizarActionPerformed
-        
         String textoFuente = areaDeTextoPrincipal.getText(); // Obtener el texto del editor
         controladorAnalizador.analizar(textoFuente); // Enviar el texto para que se analice
         // Pedir los resultados lexicos
@@ -582,7 +601,7 @@ public class VentanaPrincipal extends javax.swing.JFrame
         }
         
         // Actualizar la barra de estado
-        lblEstado.setText("Análisis completado. Errores: " + erroresEncontrados.size());
+        lblEstadoAnalisis.setText("Análisis completado. Errores: " + erroresEncontrados.size());
 
         // Cambiar automáticamente a la pestaña de Errores si hay errores
         if (!erroresEncontrados.isEmpty()) 
@@ -658,6 +677,8 @@ public class VentanaPrincipal extends javax.swing.JFrame
     private javax.swing.JMenuItem itemGuardar;
     private javax.swing.JLabel lblBusqueda;
     private javax.swing.JLabel lblEstado;
+    private javax.swing.JLabel lblEstadoAnalisis;
+    private javax.swing.JLabel lblEstadoArchivos;
     private javax.swing.JMenu menuAnalizar;
     private javax.swing.JMenu menuArchivo;
     private javax.swing.JMenuBar menuBarOpciones;

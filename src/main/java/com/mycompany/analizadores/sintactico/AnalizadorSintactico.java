@@ -151,6 +151,10 @@ public class AnalizadorSintactico
             {
                 instruccion();
             }
+            else if(esTokenComentario())
+            {
+                consumirToken();
+            }
             else
             {
                 reportarError("Token inesperado '" + tokenActual.getLexema() + "'. No es el inicio de una instruccion valida DEFINIR, ESCRIBIR.");
@@ -437,6 +441,11 @@ public class AnalizadorSintactico
     private boolean esTokenInstruccion() 
     {
         return esPalabraReservada("DEFINIR") || esPalabraReservada("ESCRIBIR") || tokenActual.getTipo() == TipoToken.IDENTIFICADOR;
+    }
+    
+    private boolean esTokenComentario()
+    {
+        return tokenActual.getTipo() == TipoToken.COMENTARIO_BLOQUE || tokenActual.getTipo() == TipoToken.COMENTARIO_LINEA;
     }
     
     private boolean esAgrupacion(String lexema) 
