@@ -313,14 +313,14 @@ public class AnalizadorSintactico
         }
         else if (tokenActual.getTipo() == TipoToken.NUMERO) 
         {
-            try // Convierte el lexema a un número double
+            try // Convierte el lexema a un numero entero
             {
-                valor = Double.parseDouble(tokenActual.getLexema());
+                valor = Integer.parseInt(tokenActual.getLexema());
             } 
             catch (NumberFormatException e) 
             {
                 reportarError("Error: El número '" + tokenActual.getLexema() + "' es invalido.", tokenActual.getLinea(), tokenActual.getColumna());
-                valor = 0.0; // Valor por defecto en caso de error
+                valor = 0; // Valor por defecto en caso de error
             }
             consumirToken();
         }
@@ -358,49 +358,74 @@ public class AnalizadorSintactico
             return null; // Si uno de los valores es nulo no se opera
         }
 
-        boolean esNumerico = val1 instanceof Double && val2 instanceof Double;
-        boolean esCadena = val1 instanceof String || val2 instanceof String;
+        boolean esNum1 = val1 instanceof Number;
+        boolean esNum2 = val2 instanceof Number;
+        boolean esCad1 = val1 instanceof String;
+        boolean esCad2 = val2 instanceof String;
 
         switch (op.getLexema()) 
         {
             case "+":
-                if (esNumerico) 
+                if (esNum1 && esNum2) 
                 {
-                    return (Double) val1 + (Double) val2;
-                }
-                else if (esCadena) 
+                    if (val1 instanceof Double || val2 instanceof Double) 
+                    {
+                        return ((Number) val1).doubleValue() + ((Number) val2).doubleValue();
+                    } 
+                    else 
+                    {
+                        return ((Integer) val1) + ((Integer) val2);
+                    }
+                } 
+                else if (esCad1 || esCad2) 
                 {
                     return val1.toString() + val2.toString();
                 } 
                 else 
                 {
-                    reportarError("Error de Tipos: No se puede sumar '" + val1.getClass().getSimpleName() + "' con '" + val2.getClass().getSimpleName() + "'.", op.getLinea(), op.getColumna());
+                    reportarError("Error: No se puede sumar '" + val1.getClass().getSimpleName() + "' con '" + val2.getClass().getSimpleName() + "'.", op.getLinea(), op.getColumna());
                     return null;
                 }
             case "-":
             case "*":
-            case "/":
-                if (esNumerico) 
+                if (esNum1 && esNum2) 
                 {
-                    if (op.getLexema().equals("-")) return (Double) val1 - (Double) val2;
-                    if (op.getLexema().equals("*")) return (Double) val1 * (Double) val2;
-                    if (op.getLexema().equals("/")) 
+                    if (val1 instanceof Double || val2 instanceof Double) 
                     {
-                        if ((Double) val2 == 0.0) 
-                        {
-                            reportarError("Error: División por cero.", op.getLinea(), op.getColumna());
-                            return 0.0; // Evitar infinitos
-                        }
-                        return (Double) val1 / (Double) val2;
+                        Double res = (op.getLexema().equals("-")) ? ((Number) val1).doubleValue() - ((Number) val2).doubleValue() : ((Number) val1).doubleValue() * ((Number) val2).doubleValue();
+                        return res;
+                    } 
+                    else 
+                    {
+                        Integer res = (op.getLexema().equals("-")) ? ((Integer) val1) - ((Integer) val2) : ((Integer) val1) * ((Integer) val2);
+                        return res;
                     }
                 }
                 else 
                 {
-                    reportarError("Error de Tipos: Operador '" + op.getLexema() + "' solo aplica a números.", op.getLinea(), op.getColumna());
+                    reportarError("Error: Operador '" + op.getLexema() + "' solo aplica a números.", op.getLinea(), op.getColumna());
+                    return null;
+                }
+            case "/":
+                if (esNum1 && esNum2)
+                {
+                    Double num1 = ((Number) val1).doubleValue();
+                    Double num2 = ((Number) val2).doubleValue();
+                    
+                    if (num2 == 0.0) 
+                    {
+                        reportarError("Error: División por cero.", op.getLinea(), op.getColumna());
+                        return 0.0; // Devolver 0.0 en caso de división por cero
+                    }
+                    return num1 / num2; 
+                } 
+                else 
+                {
+                    reportarError("Error: Operador '" + op.getLexema() + "' solo aplica a números.", op.getLinea(), op.getColumna());
                     return null;
                 }
             default:
-                return null;
+                return null; // Operador desconocido
         }
     }
     

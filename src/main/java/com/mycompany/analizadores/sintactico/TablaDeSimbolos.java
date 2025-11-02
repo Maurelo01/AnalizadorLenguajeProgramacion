@@ -55,18 +55,35 @@ public class TablaDeSimbolos
         }
         Simbolo s = tabla.get(nombre);
         TipoDeDato tipoEsperado = s.tipo;
-        if (valor instanceof Double) 
+        if (valor instanceof Integer) 
         {
-            if (tipoEsperado == TipoDeDato.ENTERO || tipoEsperado == TipoDeDato.NUMERO) // El valor calculado es un NUMERO
+            if (tipoEsperado == TipoDeDato.ENTERO) 
             {
                 s.valor = valor;
                 return true;
-            } 
+            }
+            if (tipoEsperado == TipoDeDato.NUMERO) 
+            {
+                s.valor = ((Integer) valor).doubleValue();
+                return true;
+            }
             else 
             {
-                return false; // Error: intentando asignar un número a un string
+                return false; 
             }
-        } 
+        }
+        else if (valor instanceof Double) 
+        {
+            if (tipoEsperado == TipoDeDato.NUMERO) 
+            {
+                s.valor = valor;
+                return true;
+            }
+            else 
+            {
+                return false; 
+            }
+        }
         else if (valor instanceof String) 
         {
             if (tipoEsperado == TipoDeDato.CADENA) // El valor calculado es una CADENA
