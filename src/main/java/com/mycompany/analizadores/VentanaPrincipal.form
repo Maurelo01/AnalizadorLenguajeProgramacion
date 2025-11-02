@@ -74,6 +74,7 @@
   </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Analizador"/>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="menuBar" type="java.lang.String" value="menuBarOpciones"/>
@@ -101,8 +102,13 @@
                   <Component id="splitConsolaReportes" pref="1338" max="32767" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblEstado" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblBusqueda" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblBusqueda" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="lblEstado" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="427" max="-2" attributes="0"/>
+                              <Component id="lblEstadoAnalisis" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <Component id="lblEstadoArchivos" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
@@ -117,10 +123,15 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="splitConsolaReportes" min="-2" pref="234" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lblEstado" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="30" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblEstado" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblEstadoAnalisis" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="lblBusqueda" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblEstadoArchivos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="29" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -366,6 +377,19 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JLabel" name="lblBusqueda">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Estado busqueda"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblEstadoAnalisis">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Estado Analisis"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblEstadoArchivos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Estado Archivos"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>
